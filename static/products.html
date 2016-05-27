@@ -21,13 +21,60 @@
             }
 
             refresh_products();
+
+            function convert_form_data(form) {
+                var output = {};
+
+                var form_array = $(form).serializeArray();
+                for (var index in form_array)
+                    output[form_array[index]['name']] = form_array[index]['value'];
+
+                return JSON.stringify(output);
+            }
+
+            $("#add_product").submit(function (e) {
+                e.preventDefault();
+
+                var form_data = convert_form_data(this);
+
+                $.ajax({
+                    url: '/products',
+                    type: "POST",
+                    data: form_data,
+                    contentType: 'application/json; charset=utf-8',
+                    dataType: 'json',
+                    success: function() {
+                        refresh_products();
+                    },
+                    error: function() {
+                        alert('Une erreur est survenue lors de l\'ajout de l\'article.');
+                    }
+                });
+            });
         });
     </script>
 </head>
 <body>
-    <h3>Produits</h3>
+    <h3>Liste des produits</h3>
     <ul id="products">
         <!-- dynamically generated -->
     </ul>
+
+    <hr/>
+
+    <h3>Ajouter un produit</h3>
+    <form id="add_product">
+        <label>
+            <h5>Nom produit</h5>
+            <input type="text" name="name">
+        </label>
+
+        <label>
+            <h5>Prix produit</h5>
+            <input type="text" name="price">
+        </label>
+
+        <input type="submit">
+    </form>
 </body>
 </html>
