@@ -8,27 +8,26 @@
 
     <script>
         $(function () {
-            var productList = $('#products')
+            var productList = $('#products');
 
-            productList.empty()
-
-            $.ajax('/products', {
-                success: function (data) {
-                    for (var product of data) {
-                        productList.append(`<li>${product.name}</li>`)
+            function refresh_products() {
+                $.ajax('/products', {
+                    success: function (data) {
+                        productList.empty();
+                        for (var product of data)
+                            productList.append(`<li>${product.name}</li>`);
                     }
-                }
-            })
+                });
+            }
 
-        })
+            refresh_products();
+        });
     </script>
 </head>
 <body>
-
     <h3>Produits</h3>
     <ul id="products">
         <!-- dynamically generated -->
     </ul>
-
 </body>
 </html>
