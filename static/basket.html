@@ -1,33 +1,57 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="utf-8" />
-  <title>Mon App</title>
+    <meta charset="utf-8" />
+    <title>Mon App</title>
 
-  <script src="jquery.js"></script>
+    <script src="jquery.js"></script>
 
-  <script>
-  $(function(){
-    var productList = $('#products')
+    <script>
+        $(function() {
+            var basketList = $('#baskets');
 
-    productList.empty()
+            function refresh_baskets() {
+                $.ajax('/baskets', {
+                    success: function (data) {
+                        basketList.empty();
+                        for (var basket of data)
+                            basketList.append(`<li>${basket.bid}: ${basket.email}</li>`);
+                    }
+                });
+            }
 
-    $.ajax('/products', {
-      success: function(data){
-        for(var product of data) {
-          productList.append(`<li>${product.name}</li>`)
-        }
-      }
-    })
+            refresh_baskets();
 
-  })
-  </script>
+            $("#list_form").submit(function (e) {
+                e.preventDefault();
+
+                $.ajax({
+                    url: '/baskets',
+                    type: "GET",
+                    data: form_data,
+                    contentType: 'application/json; charset=utf-8',
+                    dataType: 'json',
+                    success: function() {
+                        refresh_products();
+                    },
+                    error: function() {
+                        alert('Une erreur est survenue lors de l\'ajout de l\'article.');
+                    }
+                });
+            });
+
+        });
+    </script>
 </head>
 <body>
 
-  <h3>Produits</h3>
-  <ul id="products">
-    <!-- dynamically generated -->
+    <h3>Liste des paniers</h3>
+    <ul id="baskets">
+        <!-- dynamically generated -->
+    </ul>
+
+    <hr/>
+
   </ul>
 </body>
 </html>
