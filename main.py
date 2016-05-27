@@ -175,11 +175,11 @@ def basket_create():
 
   uid = result[0]['uid']
 
-  cur.execute('INSERT INTO basket (basket_uid) VALUES (%(uid)s)', {
+  cur.execute('INSERT INTO basket (basket_uid) VALUES (%(uid)s) RETURNING bid', {
     'uid': uid
   })
+  bid = cur.fetchone()[0]
   conn.commit()
-  bid = cur.lastrowid
 
   conn.close()
 
